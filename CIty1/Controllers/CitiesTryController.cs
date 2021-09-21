@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CIty1.Models;
+using CIty1.DTOs;
 
 namespace CIty1
 {
@@ -22,14 +23,36 @@ namespace CIty1
 
         // GET: api/Cities
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<City>>> GetCities()
+        public async Task<ActionResult<ResponseDto>> GetCities()
         {
-            return await _context.Cities.OrderByDescending(s => s.Population)
+            //return await _context.Cities.OrderByDescending(s => s.Population)
+            //                     .ToListAsync();
+
+            List<City> cities= await _context.Cities.OrderBy(s => s.Name)
                                  .ToListAsync();
+
+            if (cities.Count>0) 
+            {
+               return StatusCode(StatusCodes.Status200OK, new ResponseDto
+                {
+                    Message = "this is 4th times",
+                    Success = true,
+                    Payload = cities
+                });
+            }
+            else 
+            {
+                return StatusCode(StatusCodes.Status404NotFound, new ResponseDto
+                {
+                    Message = "this is 4th times",
+                    Success = false,
+                    Payload = null
+                });
+            }
 
             //return await _context.Cities.OrderBy(s => s.Name)
             //                     .ToListAsync();
-            //return Ok();
+            
         }
 
         // GET: api/Cities/5
