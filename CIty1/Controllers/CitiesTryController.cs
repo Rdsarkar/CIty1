@@ -263,7 +263,7 @@ namespace CIty1
             }
 
         }
-
+        // Delete kal korbo 
         // DELETE: api/Cities/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCity(decimal id)
