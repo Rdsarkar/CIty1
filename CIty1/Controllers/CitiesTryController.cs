@@ -15,13 +15,13 @@ namespace CIty1
         public decimal Id { get; set; }
     }
 
-    public class SelfClass2
-    {
-        public decimal Id { get; set; }
-        public string Name { get; set; }
-        public string Countrycode { get; set; }
-        public decimal? Population { get; set; }
-    }
+    //public class SelfClass2
+    //{
+    //    public decimal Id { get; set; }
+    //    public string Name { get; set; }
+    //    public string Countrycode { get; set; }
+    //    public decimal? Population { get; set; }
+    //}
     [Route("api/[controller]")]
     [ApiController]
     public class CitiesTryController : ControllerBase
@@ -263,21 +263,52 @@ namespace CIty1
             }
 
         }
-        // Delete kal korbo 
+        
         // DELETE: api/Cities/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCity(decimal id)
+        [HttpPost("DeleteCity")]
+        public async Task<ActionResult<ResponseDto>> DeleteCity([FromBody] SelfClass input)
         {
-            var city = await _context.Cities.FindAsync(id);
+            if (input.Id == 0) 
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseDto 
+                {
+                    Message = "Wrong User Input",
+                    Success = false,
+                    Payload = null
+                });
+            }
+           
+            City city = await _context.Cities.Where(i=>i.Id == input.Id).FirstOrDefaultAsync();
+            
             if (city == null)
             {
-                return NotFound();
+                return StatusCode(StatusCodes.Status404NotFound, new ResponseDto 
+                {
+                    Message= "Server Error! Nothing to delete without finding a existing data",
+                    Success = false,
+                    Payload = null
+                });
             }
 
             _context.Cities.Remove(city);
-            await _context.SaveChangesAsync();
+            bool isSaved = await _context.SaveChangesAsync() > 0;
 
-            return NoContent();
+            if (isSaved == false) 
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseDto 
+                {
+                    Message = "Data isn't Delete yet try again!!",
+                    Success = false,
+                    Payload = null
+                });
+            }
+
+            return StatusCode(StatusCodes.Status200OK, new ResponseDto
+            {
+                Message = "Successfully data deleted",
+                Success = true,
+                Payload = null
+            });
         }
 
         private bool CityExists(decimal id)
