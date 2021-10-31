@@ -29,7 +29,7 @@ namespace CIty1
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ModelContext>(options =>
-                options.UseOracle("Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=XEPDB1)));Persist Security Info=True;User Id=city;Password=oracle;")
+                options.UseOracle("Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1522))(CONNECT_DATA=(SERVICE_NAME=XEPDB1)));Persist Security Info=True;User Id=city;Password=oracle;")
             );
             services.AddControllers();
             services.AddSwaggerGen(c =>
